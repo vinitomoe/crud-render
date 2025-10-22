@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Render - Alunos</title>
+  <style>
+    body { font-family: Arial; max-width: 600px; margin: 40px auto; background: #f7f7f7; padding: 20px; border-radius: 12px; }
+    h1 { text-align: center; color: #003366; }
+    label { display: block; margin-top: 10px; }
+    input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px; }
+    button { margin-top: 12px; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { opacity: 0.9; }
+    .cad { background: #4CAF50; color: white; }
+    .alt { background: #2196F3; color: white; }
+    .exc { background: #f44336; color: white; }
+    .cons { background: #ff9800; color: white; }
+    #resultado { background: white; margin-top: 20px; padding: 10px; border-radius: 6px; }
+    table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #003366; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Cadastro de Alunos</h1>
+
+  <label>Nome:</label>
+  <input type="text" id="nome">
+
+  <label>Idade:</label>
+  <input type="number" id="idade">
+
+  <label>ID (para alterar/excluir):</label>
+  <input type="number" id="id">
+
+  <button class="cad" onclick="cadastrar()">Cadastrar</button>
+  <button class="alt" onclick="alterar()">Alterar</button>
+  <button class="exc" onclick="excluir()">Excluir</button>
+  <button class="cons" onclick="consultar()">Consultar</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    // 🔗 URL da sua API no Render
+    const API = window.location.origin; // funciona automático, mesmo online
+
+    async function cadastrar() {
+      const nome = document.getElementById("nome").value;
+      const idade = document.getElementById("idade").value;
+      const res = await fetch(`${API}/alunos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, idade })
+      });
+      alert(await res.text());
+      consultar();
+    }
+
+    async function consultar() {
+      const res = await fetch(`${API}/alunos`);
+      const dados = await res.json();
+      let tabela = `<table><tr><th>ID</th><th>Nome</th><th>Idade</th></tr>`;
+      dados.forEach(a => {
+        tabela += `<tr><td>${a.id}</td><td>${a.nome}</td><td>${a.idade}</td></tr>`;
+      });
+      tabela += `</table>`;
+      document.getElementById("resultado").innerHTML = tabela;
+    }
+
+    async function alterar() {
+      const id = document.getElementById("id").value;
+      const nome = document.getElementById("nome").value;
+      const idade = document.getElementById("idade").value;
+      const res = await fetch(`${API}/alunos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, idade })
+      });
+      alert(await res.text());
+      consultar();
+    }
+
+    async function excluir() {
+      const id = document.getElementById("id").value;
+      const res = await fetch(`${API}/alunos/${id}`, { method: "DELETE" });
+      alert(await res.text());
+      consultar();
+    }
+  </script>
+</body>
+</html>

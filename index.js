@@ -1,16 +1,18 @@
-// CRUD Render - Aula CNW2
+// Projeto CRUD Render - Aula CNW2
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname))); // 🔥 Serve o HTML
 
-// 🔗 Conexão com banco Render
+// 🔗 Conexão com banco no Render
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgresql://bezkoder_crud_user:kDyPGPdBwC46CrFTtSClAmr9csVvk8IB@dpg-d3s9o4buibrs73ep8vc0-a/bezkoder_crud",
   ssl: { rejectUnauthorized: false }
 });
 
@@ -36,7 +38,7 @@ app.post("/alunos", async (req, res) => {
   const { nome, idade } = req.body;
   try {
     await pool.query("INSERT INTO alunos (nome, idade) VALUES ($1, $2)", [nome, idade]);
-    res.send("Aluno cadastrado com sucesso!");
+    res.send("✅ Aluno cadastrado com sucesso!");
   } catch (err) {
     console.error("Erro ao cadastrar:", err);
     res.status(500).send("Erro ao cadastrar aluno");
@@ -60,7 +62,7 @@ app.put("/alunos/:id", async (req, res) => {
   const { nome, idade } = req.body;
   try {
     await pool.query("UPDATE alunos SET nome=$1, idade=$2 WHERE id=$3", [nome, idade, id]);
-    res.send("Aluno atualizado com sucesso!");
+    res.send("✏️ Aluno atualizado com sucesso!");
   } catch (err) {
     console.error("Erro ao atualizar:", err);
     res.status(500).send("Erro ao atualizar aluno");
@@ -72,7 +74,7 @@ app.delete("/alunos/:id", async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query("DELETE FROM alunos WHERE id=$1", [id]);
-    res.send("Aluno excluído com sucesso!");
+    res.send("🗑️ Aluno excluído com sucesso!");
   } catch (err) {
     console.error("Erro ao excluir:", err);
     res.status(500).send("Erro ao excluir aluno");
