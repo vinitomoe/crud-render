@@ -40,14 +40,12 @@
   <div id="resultado"></div>
 
   <script>
-    // 🔗 URL da API hospedada no Render
-    const API = "https://crud-render-1-sfhc.onrender.com";
+    // 🔗 URL da sua API no Render
+    const API = window.location.origin; // funciona automático, mesmo online
 
     async function cadastrar() {
       const nome = document.getElementById("nome").value;
       const idade = document.getElementById("idade").value;
-      if (!nome || !idade) return alert("Preencha todos os campos!");
-
       const res = await fetch(`${API}/alunos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -72,8 +70,6 @@
       const id = document.getElementById("id").value;
       const nome = document.getElementById("nome").value;
       const idade = document.getElementById("idade").value;
-      if (!id || !nome || !idade) return alert("Preencha ID, nome e idade!");
-
       const res = await fetch(`${API}/alunos/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -85,8 +81,6 @@
 
     async function excluir() {
       const id = document.getElementById("id").value;
-      if (!id) return alert("Informe o ID para excluir!");
-
       const res = await fetch(`${API}/alunos/${id}`, { method: "DELETE" });
       alert(await res.text());
       consultar();
